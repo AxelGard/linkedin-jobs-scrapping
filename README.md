@@ -2,8 +2,7 @@
 Market tech stack analysis
 
 
-![Market Tech Stack Analysis New York](./doc/ny.png)
-![Market Tech Stack Analysis Linköping](./doc/lkpg.png)
+![Market Tech Stack Analysis Stockholm](./doc/Sweden.png)
 
 This repository contains a Jupyter notebook that collects data on the demand for various programming languages in job postings for a specified job title and location using web scraping techniques. The collected data is then analyzed and visualized to provide insights into the most sought-after programming languages in the job market for the given criteria.
 
@@ -27,4 +26,19 @@ pip install -r requirements.txt
 ```
 
 3. Open the `collect.ipynb` Jupyter notebook in your preferred environment (e.g., Jupyter Notebook, JupyterLab, VSCode).
-were you can explore the data that has been collected.
+were you can collect and explore the data that has been collected.
+
+
+### cron job for collecting data regularly
+
+You can set up a cron job to run the data collection script at regular intervals. Here's an example of how to set up a cron job that runs the script every day at midnight:
+
+```bash
+crontab -e
+```
+
+then add the following line to the crontab file: 
+
+```bash
+0 0 1 * * /path/to/your/venv/bin/python /path/to/market-tech-stack-analysis/collect.py -t "Software Developer" -l "Sweden" -n 600 
+```
