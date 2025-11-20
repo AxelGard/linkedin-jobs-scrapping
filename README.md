@@ -4,7 +4,7 @@ Market tech stack analysis
 
 ![Market Tech Stack Analysis Sweden](./doc/skills_Sweden.png)
 
-See more example charts in [doc/charts.md](./doc/charts.md)
+See more example charts in [doc/charts.md](https://github.com/AxelGard/market-tech-stack-analysis/blob/master/doc/Skills_Sweden.png)
 
 This repository contains a Jupyter notebook that collects data on the demand for various programming languages in job postings for a specified job title and location using web scraping techniques. The collected data is then analyzed and visualized to provide insights into the most sought-after programming languages in the job market for the given criteria.
 
