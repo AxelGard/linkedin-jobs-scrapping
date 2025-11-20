@@ -8,3 +8,6 @@ This repository contains a Jupyter notebook that collects data on the demand for
 
 You can modify the job title and location variables in the notebook to analyze different roles and regions. 
 
+You can add more programming languages or skills to the `skills.csv` file to expand the analysis further.
+
+
