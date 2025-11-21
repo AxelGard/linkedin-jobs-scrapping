@@ -44,3 +44,9 @@ then add the following line to the crontab file:
 ```bash
 0 0 1 * * /path/to/your/venv/bin/python /path/to/market-tech-stack-analysis/collect.py -t "Software Developer" -l "Sweden" -n 600 
 ```
+
+you can also execute the notebook if you prefer that way: 
+
+```bash
+0 0 1 * * /path/to/your/venv/bin/jupyter nbconvert --execute /path/to/market-tech-stack-analysis/collect.ipynb 
+```

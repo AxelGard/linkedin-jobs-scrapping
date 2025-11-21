@@ -26,6 +26,7 @@ def search_linkedin_jobs(title: str, location: str, num_jobs: int):
     users_of_languages = get_relevant_skills()
     prg_skills = set(users_of_languages.keys())
     job_list = []
+    one_hot_skills = {s : [] for s in prg_skills}
 
     for start in tqdm(range(0, num_jobs, 25)):
         list_url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={title}&location={location}&distance=25&f_TPR=&f_WT=1&start={start}"
@@ -119,6 +120,7 @@ def search_linkedin_jobs(title: str, location: str, num_jobs: int):
                     ).text.lower()
                 ):
                     users_of_languages[lang] += 1
+                    one_hot_skills[lang].append(job_post["company_name"])
             job_list.append(job_post)
             time.sleep(
                 random.uniform(1, 3)
@@ -144,6 +146,17 @@ def search_linkedin_jobs(title: str, location: str, num_jobs: int):
         f'./results/skills_{title}_{location}_{datetime.datetime.now().strftime("%Y-%m-%d")}.csv',
         index=False,
     )
+
+    one_hot_df = pd.DataFrame.from_dict(one_hot_skills, orient='index').transpose()
+    one_hot_df.to_csv(f'./results/one_hot_skills_{title}_{location}_{datetime.datetime.now().strftime("%Y-%m-%d")}.csv', index=False)
+
+    companies_used_skill = {}
+    for skill, companies in one_hot_skills.items():
+        companies_used_skill[skill] = [len(set([c for c in companies if c is not None]))]
+
+    companies_used_skill_df = pd.DataFrame.from_dict(companies_used_skill, orient='index', columns=['Number of Companies']).reset_index()
+    companies_used_skill_df = companies_used_skill_df.sort_values(by='Number of Companies', ascending=False).reset_index(drop=True)
+    companies_used_skill_df.to_csv(f'./results/skill_usage_{title}_{location}_{datetime.datetime.now().strftime("%Y-%m-%d")}.csv', index=False)
 
 
 def main() -> int:
