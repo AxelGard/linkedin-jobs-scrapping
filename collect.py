@@ -131,7 +131,7 @@ def search_linkedin_jobs(title: str, location: str, num_jobs: int, output_path:s
 
     jobs_df = pd.DataFrame(job_list)
     jobs_df.to_csv(
-        f'./results/jobs_{title}_{location}_{datetime.datetime.now().strftime("%Y-%m-%d")}.csv',
+        f'{output_path}jobs_{title}_{location}_{datetime.datetime.now().strftime("%Y-%m-%d")}.csv',
         index=False,
     )
 
@@ -204,7 +204,7 @@ def main() -> int:
     output_path = args.output
     skills_file = args.skills
 
-    os.makedirs(output_path, exist_ok=True)  # will dump results here
+    os.makedirs(output_path, exist_ok=True)  
 
     search_linkedin_jobs(title, location, NUMBER_OF_JOBS_TO_FETCH, output_path, skills_file)
 
