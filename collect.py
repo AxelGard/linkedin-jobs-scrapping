@@ -13,8 +13,8 @@ import os
 from collections import defaultdict
 
 
-def get_relevant_skills():
-    prg_skills = pd.read_csv("./skills.csv")["skills"].to_list()
+def get_relevant_skills(skills_file):
+    prg_skills = pd.read_csv(skills_file)["skills"].to_list()
     prg_skills = set(prg_skills)
 
     users_of_languages = defaultdict(int)
@@ -23,8 +23,8 @@ def get_relevant_skills():
     return dict(users_of_languages)
 
 
-def search_linkedin_jobs(title: str, location: str, num_jobs: int, output_path:str):
-    users_of_languages = get_relevant_skills()
+def search_linkedin_jobs(title: str, location: str, num_jobs: int, output_path:str, skills_file:str):
+    users_of_languages = get_relevant_skills(skills_file)
     prg_skills = set(users_of_languages.keys())
     job_list = []
     one_hot_skills = {s : [] for s in prg_skills}
@@ -146,7 +146,7 @@ def search_linkedin_jobs(title: str, location: str, num_jobs: int, output_path:s
         skill_usage[skill_usage["Number of Job Postings"] == 0].index, inplace=True
     )
     skill_usage.to_csv(
-        f'./results/skills_{title}_{location}_{datetime.datetime.now().strftime("%Y-%m-%d")}.csv',
+        f'{output_path}/skills_{title}_{location}_{datetime.datetime.now().strftime("%Y-%m-%d")}.csv',
         index=False,
     )
 
@@ -182,6 +182,13 @@ def main() -> int:
             default="./results/",
             type=str, help="output path (defualt: ./results/)"
     )
+
+    parser.add_argument(
+            "--skills", 
+            default="./skills.csv",
+            type=str, help="Path to skills (defualt: ./skills.csv)"
+    )
+
     parser.add_argument(
         "-n",
         "--num_jobs",
@@ -195,10 +202,11 @@ def main() -> int:
     location = args.location
     NUMBER_OF_JOBS_TO_FETCH = args.num_jobs
     output_path = args.output
+    skills_file = args.skills
 
     os.makedirs(output_path, exist_ok=True)  # will dump results here
 
-    search_linkedin_jobs(title, location, NUMBER_OF_JOBS_TO_FETCH, output_path)
+    search_linkedin_jobs(title, location, NUMBER_OF_JOBS_TO_FETCH, output_path, skills_file)
 
     return 0
 
