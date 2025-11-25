@@ -1,3 +1,4 @@
+#!./env/bin/python3
 import requests
 from bs4 import BeautifulSoup
 import random
@@ -41,6 +42,8 @@ def search_linkedin_jobs(title: str, location: str, num_jobs: int):
 
         for job in page_jobs:
             base_card_div = job.find("div", {"class": "base-card"})
+            if base_card_div == None:
+                continue
             job_id = base_card_div.get("data-entity-urn").split(":")[3]
             id_list.append(job_id)
 

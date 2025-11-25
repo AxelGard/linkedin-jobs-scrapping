@@ -50,3 +50,10 @@ you can also execute the notebook if you prefer that way:
 ```bash
 0 0 1 * * /path/to/your/venv/bin/jupyter nbconvert --execute /path/to/market-tech-stack-analysis/collect.ipynb 
 ```
+
+
+you can also make the data into repport by 
+
+```bash 
+jupyter nbconvert --to html --no-input ./charts.ipynb
+```
