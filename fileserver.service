@@ -1,0 +1,14 @@
+[Unit]
+Description=Simple File Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/linkdata
+ExecStart=/usr/bin/python3 -m http.server 8080
+Restart=on-failure
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target
