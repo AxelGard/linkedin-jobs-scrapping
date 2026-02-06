@@ -1,14 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LinkedIn Job data </title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-    <h1>LinkedIn Job data </h1>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/LinkedIn_2021.svg/500px-LinkedIn_2021.svg.png" alt="LinkedIn" srcset=""> 
-    <br>
-    <a href="./index.html">some text</a>
+
+    <h2>Simple Line Chart Example</h2>
+
+    <!-- Canvas for chart -->
+    <div style="width: 900px;">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        const data = {
+            labels: ['Jan', 'Feb', 'Mar'],
+            datasets: [{
+                label: 'Website Traffic',
+                data: [1000, 1200, 1500],
+            }, 
+{
+                label: 'Website Traffic 2 ',
+                data: [1300, 1200, 1540],
+            }
+        
+        ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data
+        };
+
+        const myChart = new Chart(ctx, config);
+    </script>
+
+
 </body>
+
 </html>

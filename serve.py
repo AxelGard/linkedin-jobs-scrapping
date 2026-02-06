@@ -8,7 +8,7 @@ def main():
     )
     parser.add_argument(
         "--input",
-        default="./img/",
+        default="./www/",
         type=str,
         help="input path (defualt: ./results/)",
     )
@@ -41,7 +41,7 @@ def main():
         """
         f.write(html)
 
-    os.system("cp -fR ./img/* /var/www/linkdata/")
+    os.system(f"cp -fR {path}* /var/www/linkdata/")
     return 0
 
 if __name__ == "__main__":

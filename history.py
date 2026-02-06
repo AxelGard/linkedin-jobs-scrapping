@@ -14,6 +14,56 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 
 
+def make_chartjs_config(df: pd.DataFrame, column_name_of_data: str, title: str) -> dict:
+    plot_set = []
+    labels = df["date"].unique().tolist()
+    for c in df["company_name"].unique().tolist():
+        comp_data = df[df["company_name"] == c]
+        data = comp_data[column_name_of_data].to_list()
+        if len(data) < len(labels):
+            _tmp = []
+            for d in labels:
+                if not d in comp_data["date"].unique().tolist():
+                    _tmp.append(0)
+                else:
+                    exsiting = (
+                        comp_data[comp_data["date"] == d]
+                        .iloc[0][column_name_of_data]
+                        .item()
+                    )
+                    _tmp.append(exsiting)
+            data = _tmp
+
+        plot_set.append(
+            {
+                "label": c,
+                "data": data,
+            }
+        )
+
+    opt = {
+        "scales": {"y": {"beginAtZero": "true"}},
+        "plugins": {
+            "title": {
+                "display": "true",
+                "text": title,
+                "font": {"size": 30, "color": "black", "style": "italic"},
+            }
+        },
+    }
+
+    config = {
+        "data": {
+            "labels": labels,
+            "datasets": plot_set,
+        },
+        "type": "line",
+        "colorscheme": "tableau.ClassicLight10",
+        "options": opt,
+    }
+    return config
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -40,7 +90,7 @@ def main():
     )
 
     parser.add_argument(
-        "--output", default="./img/", type=str, help="output path (defualt: ./img/)"
+        "--output", default="./www/", type=str, help="output path (defualt: ./www/)"
     )
 
     parser.add_argument(
@@ -50,22 +100,14 @@ def main():
         help="Path to skip file of company names to ingore (defualt: ./skip.csv)",
     )
 
-    parser.add_argument(
-        "--html",
-        action="store_true",
-        help="Make a html file to serve output (defualt: False)",
-    )
-
     args = parser.parse_args()
     title = args.title
     location = args.location
     output = args.output
     input_path = args.input
     skip_file = args.skip
-    save_to_html = args.html
 
     skip_companies = pd.read_csv(skip_file)["company_name"].to_list()
-    print(skip_companies)
 
     if not os.path.exists(output):
         os.makedirs(output)
@@ -78,7 +120,6 @@ def main():
     for file in os.listdir(input_path):
         if file.endswith(".csv") and location in file:
             count += 1
-    print(f"Total number of files for {location}: {count}")
 
     all_jobs_dfs = []
     for file in tqdm(os.listdir(input_path)):
@@ -87,9 +128,10 @@ def main():
             df = pd.read_csv(os.path.join(input_path, file))
             df["date"] = date
             all_jobs_dfs.append(df)
-    print(f"Total number of dataframes collected: {len(all_jobs_dfs)}")
+
     job_title = title
     place = location
+
     minimum_number_of_jobs = 0
     jobs_over_time = pd.concat(all_jobs_dfs)
     jobs_over_time_grouped = (
@@ -98,25 +140,15 @@ def main():
         .reset_index(name="job_count")
     )
     jobs_over_time_grouped = jobs_over_time_grouped[
-        ~jobs_over_time_grouped["company_name"].isin(skip_companies)
-    ]
-    jobs_over_time_grouped = jobs_over_time_grouped[
         jobs_over_time_grouped["job_count"] >= minimum_number_of_jobs
     ]
-    jobs_over_time_grouped = jobs_over_time_grouped.fillna(0)
-    jobs_over_time_pivot = jobs_over_time_grouped.pivot(
-        index="date", columns="company_name", values="job_count"
-    ).fillna(0)
-    jobs_over_time_pivot.plot(kind="line", figsize=(15, 8))
-    plt.title(
-        f'Number of Job Postings Over Time per Company in {location} for "{job_title}"'
+    jobs_over_time_grouped = jobs_over_time_grouped[
+        ~jobs_over_time_grouped["company_name"].isin(skip_companies)
+    ]
+
+    config_num_job_postings = make_chartjs_config(
+        jobs_over_time_grouped, "job_count", "number of job postings"
     )
-    plt.xlabel("Date")
-    plt.ylabel("Number of Job Postings")
-    plt.legend(title="Company Name", bbox_to_anchor=(1.05, 1), loc="upper left")
-    plt.tight_layout()
-    fig_job_posts = f"{output}{location}_{title}_job_posts.png"
-    plt.savefig(fig_job_posts)
 
     minimum_number_of_application = 0
     applications_over_time = pd.concat(all_jobs_dfs)
@@ -135,19 +167,10 @@ def main():
         applications_over_time_grouped["total_applications"]
         >= minimum_number_of_application
     ]
-    applications_over_time_pivot = applications_over_time_grouped.pivot(
-        index="date", columns="company_name", values="total_applications"
-    ).fillna(0)
-    applications_over_time_pivot.plot(kind="line", figsize=(15, 8))
-    plt.title(
-        f'Number of Applications Over Time per Company in {place} (excluding well known consulting companies) for "{job_title}" '
+
+    config_applications = make_chartjs_config(
+        applications_over_time_grouped, "total_applications", "number of applications"
     )
-    plt.xlabel("Date")
-    plt.ylabel("Number of Applications")
-    plt.legend(title="Company Name", bbox_to_anchor=(1.05, 1), loc="upper left")
-    plt.tight_layout()
-    fig_applitactions = f"{output}{location}_{title}_applications.png"
-    plt.savefig(fig_applitactions)
 
     minimum_number_of_jobs = 0
     jobs_over_time = pd.concat(all_jobs_dfs)
@@ -163,41 +186,62 @@ def main():
         jobs_over_time_grouped["job_count"] >= minimum_number_of_jobs
     ]
     jobs_over_time_grouped = jobs_over_time_grouped.fillna(0)
-    jobs_over_time_pivot = jobs_over_time_grouped.pivot(
-        index="date", columns="company_name", values="job_count"
-    ).fillna(0)
-    jobs_over_time_pivot.plot(kind="line", figsize=(15, 8))
-    plt.title(
-        f'Number of Job Postings Over Time per Company in {location} (skipped companies) for "{job_title}"'
-    )
-    plt.xlabel("Date")
-    plt.ylabel("Number of Job Postings")
-    plt.legend(title="Company Name", bbox_to_anchor=(1.05, 1), loc="upper left")
-    plt.tight_layout()
-    fig_job_posts_skipped = f"{output}{location}_{title}_job_posts_skipped.png"
-    plt.savefig(fig_job_posts_skipped)
 
+    config_skipped = make_chartjs_config(jobs_over_time_grouped, "job_count", "skipped")
 
-    if save_to_html:
-        
-        with open(f"{output}index.html", "w") as f:
-            imgs = "\n".join([f'<img src="{p.replace(output, "./")}" alt="" srcset=""><br>' for p in [fig_job_posts, fig_applitactions, fig_job_posts_skipped]])
-            html = f"""
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linkedin Job data </title>
-</head>
-<body>
-    <h1>Linkedin Job data from {location}</h1>
-    <br>
-    {imgs}
-</body>
-</html>
-            """
-            f.write(html)
+    charts_names = ["numjobs", "applicatons", "skipped"]
+    charts_setups = [config_num_job_postings, config_applications, config_skipped]
+
+    assert len(charts_names) == len(charts_setups), "missing config or unique name"
+
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LinkedIn data {place} for {job_title} </title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+
+    <body>
+        <h1 style="text-align: center;font-family: Arial, sans-serif;">
+        Linkedin Job data from {place} for {job_title}</h1>
+
+        <div style="width: 900px;margin-left: 27%;">
+        {"<br><br>".join([f"<canvas id='{c}'></canvas>" for c in charts_names])}
+            
+            
+        </div>
+
+        <script>
+        {
+            "\n".join([
+            f"""
+                new Chart(
+                    document.getElementById('{charts_names[idx]}').getContext('2d'), 
+                    {conf}
+                );
+            """ 
+                for idx, conf in enumerate(charts_setups)
+            ])
+        }
+        </script>
+
+       <br>
+       <br>
+       <br>
+       <br> 
+       <br> 
+
+    </body>
+
+    </html>
+    """.replace("True", "true")
+
+    with open(f"{output}index.html", "w") as f:
+        f.write(html)
 
 
 if __name__ == "__main__":
