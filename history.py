@@ -203,16 +203,29 @@ def main():
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>LinkedIn data {place} for {job_title} </title>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     </head>
 
     <body>
         <h1 style="text-align: center;font-family: Arial, sans-serif;">
         Linkedin Job data from {place} for {job_title}</h1>
 
-        <div style="width: 900px;margin-left: 27%;">
-        {"<br><br>".join([f"<canvas id='{c}'></canvas>" for c in charts_names])}
-            
-            
+        <div class="container text-center">
+          <div class="row">
+
+            <div class="col">
+            </div>
+
+            <div class="col-8">
+                {"<br><br>".join([f"<canvas id='{c}'></canvas>" for c in charts_names])}
+
+            </div>
+
+            <div class="col">
+            </div>
+
+          </div>
         </div>
 
         <script>

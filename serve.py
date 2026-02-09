@@ -21,10 +21,19 @@ def main():
         help="input path (defualt: Linköping)",
     )
 
+    parser.add_argument(
+        '--debug', 
+        '-d',
+        action='store_true'
+    )
+
     args = parser.parse_args()
     path = args.input
     location = args.location
+    debugging = args.debug
 
+    if path[-1] != "/":
+        path += "/"
     
     for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]:
         location, title = p.split("-")
@@ -32,7 +41,7 @@ def main():
 
 
     with open(f"{path}index.html", "w") as f:
-        links = "\n".join([f'<a href="./{p}">{p}<br>' for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]])
+        links = "\n".join([f'<a style="font-family: Arial, sans-serif;" href="./{p}">{p}</a><br>' for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]])
         html = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +51,9 @@ def main():
     <title>Linkedin Job data </title>
 </head>
 <body>
-    <h1>Linkedin Job data from {location}</h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/LinkedIn_2021.svg/500px-LinkedIn_2021.svg.png">
+    <br>
+    <h1 style="font-family: Arial, sans-serif;">Linkedin Job data from {location}</h1>
     <br>
     {links}
 </body>
@@ -50,7 +61,8 @@ def main():
         """
         f.write(html)
 
-    os.system(f"cp -fR {path}* /var/www/linkdata/")
+    if not debugging:
+        os.system(f"cp -fR {path}* /var/www/linkdata/")
     return 0
 
 if __name__ == "__main__":
