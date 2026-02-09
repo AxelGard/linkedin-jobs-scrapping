@@ -41,7 +41,7 @@ def main():
 
 
     with open(f"{path}index.html", "w") as f:
-        links = "\n".join([f'<a style="font-family: Arial, sans-serif;" href="./{p}">{p}</a><br>' for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]])
+        links = "\n".join([f'<li><a style="font-family: Arial, sans-serif;" href="./{p}">{p}</a></li>' for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]])
         html = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -49,13 +49,35 @@ def main():
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linkedin Job data </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </head>
 <body>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/LinkedIn_2021.svg/500px-LinkedIn_2021.svg.png">
-    <br>
-    <h1 style="font-family: Arial, sans-serif;">Linkedin Job data from {location}</h1>
-    <br>
-    {links}
+
+        <br>
+        <div class="container">
+          <div class="row">
+
+            <div class="col">
+            </div>
+
+            <div class="col-8">
+                <img src="https://www.togethertech.com/sites/default/files/logo_togethertech.png"> 
+                <hr>
+                <br>
+                <h1 style="font-family: Arial, sans-serif;">Linkedin Job data</h1>
+                <br>
+                <ul>
+                    {links}
+                </ul>
+            </div>
+
+            <div class="col">
+            </div>
+
+          </div>
+        </div>
+    
 </body>
 </html>
         """
