@@ -216,8 +216,6 @@ def main():
 
             <div class="col-8">
             <br>
-            <img src="https://www.togethertech.com/sites/default/files/logo_togethertech.png"> 
-            <hr>
             <h1 style="text-align: center;font-family: Arial, sans-serif;">
             Linkedin Job data from {place} for {job_title}</h1>
                 {"<br><br>".join([f"<canvas id='{c}'></canvas>" for c in charts_names])}

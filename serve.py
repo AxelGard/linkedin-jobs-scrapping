@@ -62,8 +62,6 @@ def main():
             </div>
 
             <div class="col-8">
-                <img src="https://www.togethertech.com/sites/default/files/logo_togethertech.png"> 
-                <hr>
                 <br>
                 <h1 style="font-family: Arial, sans-serif;">Linkedin Job data</h1>
                 <br>
