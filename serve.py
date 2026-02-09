@@ -13,8 +13,17 @@ def main():
         help="input path (defualt: ./results/)",
     )
 
+    parser.add_argument(
+        "--location",
+        "-l",
+        default="Linköping",
+        type=str,
+        help="input path (defualt: Linköping)",
+    )
+
     args = parser.parse_args()
     path = args.input
+    location = args.location
 
     
     for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]:
@@ -23,7 +32,7 @@ def main():
 
 
     with open(f"{path}index.html", "w") as f:
-        imgs = "\n".join([f'<a href="./{p}">{p}<br>' for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]])
+        links = "\n".join([f'<a href="./{p}">{p}<br>' for p in [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]])
         html = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +44,7 @@ def main():
 <body>
     <h1>Linkedin Job data from {location}</h1>
     <br>
-    {imgs}
+    {links}
 </body>
 </html>
         """
